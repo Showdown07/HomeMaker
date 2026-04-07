@@ -45,6 +45,57 @@ const Layout = ({ children }) => {
         </div>
       </header>
       <main className="page">{children}</main>
+      <footer className="site-footer">
+        <div className="site-footer-grid">
+          <div>
+            <div className="brand footer-brand">
+              <span className="brand-mark">HS</span>
+              <span>
+                HomeSphere
+                <small>Concierge-grade home services</small>
+              </span>
+            </div>
+            <p className="site-footer-copy">
+              Trusted home services, curated and ranked for the neighborhoods that matter to you.
+            </p>
+          </div>
+
+          <div>
+            <p className="site-footer-label">Platform</p>
+            <div className="site-footer-links">
+              <Link to="/">Home</Link>
+              <Link to="/register">Register</Link>
+              <Link to="/login">Login</Link>
+            </div>
+          </div>
+
+          <div>
+            <p className="site-footer-label">Categories</p>
+            <div className="site-footer-links">
+              <span>Cleaning</span>
+              <span>Cooking</span>
+              <span>Electrician</span>
+              <span>Plumbing</span>
+              <span>Painting</span>
+            </div>
+          </div>
+
+          <div>
+            <p className="site-footer-label">Trust</p>
+            <div className="site-footer-links">
+              <span>Verified providers</span>
+              <span>Location-aware discovery</span>
+              <span>Rated and reviewed</span>
+              <span>Real-time notifications</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="site-footer-bottom">
+          <p>Copyright 2026 HomeSphere</p>
+          <p>Built for modern homes</p>
+        </div>
+      </footer>
     </div>
   );
 };

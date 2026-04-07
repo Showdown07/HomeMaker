@@ -204,7 +204,7 @@ const ServiceFilters = ({ onSearch }) => {
       <section className="geo-panel">
         <div className="geo-panel-copy">
           <span className="eyebrow dark">Geo search</span>
-          <h3>Choose your service area.</h3>
+          <h3>Pick an area, not coordinates.</h3>
           <p className="muted-text">
             Use your device location, tap a neighborhood preset, or click the map to set the
             service discovery zone.
@@ -214,7 +214,7 @@ const ServiceFilters = ({ onSearch }) => {
               <button
                 key={preset.label}
                 type="button"
-                className="ghost-button geo-preset-button"
+                className="ghost-button"
                 onClick={() => handlePresetPick(preset)}
               >
                 {preset.label}
@@ -222,10 +222,10 @@ const ServiceFilters = ({ onSearch }) => {
             ))}
           </div>
           <div className="geo-actions">
-            <button type="button" className="primary-button geo-locate-button" onClick={handleLocateMe}>
+            <button type="button" className="primary-button" onClick={handleLocateMe}>
               Use My Location
             </button>
-            <span className="muted-text geo-helper-text">{geoMessage}</span>
+            <span className="muted-text">{geoMessage}</span>
           </div>
         </div>
 
