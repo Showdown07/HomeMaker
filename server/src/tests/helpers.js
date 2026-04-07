@@ -26,6 +26,16 @@ export const createAuthFixtures = async () => {
     location: { type: "Point", coordinates: [77.6, 12.97] },
   });
 
+  const admin = await User.create({
+    name: "Admin User",
+    email: "admin@test.com",
+    password: "password123",
+    role: "admin",
+    city: "Bengaluru",
+    pincode: "560001",
+    location: { type: "Point", coordinates: [77.58, 12.98] },
+  });
+
   const service = await Service.create({
     name: "Deep Cleaning",
     description: "Apartment deep cleaning",
@@ -36,5 +46,5 @@ export const createAuthFixtures = async () => {
     provider: provider._id,
   });
 
-  return { provider, user, service };
+  return { provider, user, admin, service };
 };

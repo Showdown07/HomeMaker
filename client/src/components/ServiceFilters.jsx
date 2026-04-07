@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 
+const STORAGE_KEY = "homeSphere:last-location";
+
 const initialState = {
   city: "Bengaluru",
   pincode: "",
@@ -59,6 +61,22 @@ const ServiceFilters = ({ onSearch }) => {
   }, [filters.lat, filters.lng]);
 
   useEffect(() => {
+    const savedLocation = localStorage.getItem(STORAGE_KEY);
+    if (!savedLocation) return;
+
+    try {
+      const parsed = JSON.parse(savedLocation);
+      setFilters((current) => ({
+        ...current,
+        ...parsed,
+      }));
+      setGeoMessage("Using your last saved search area");
+    } catch {
+      localStorage.removeItem(STORAGE_KEY);
+    }
+  }, []);
+
+  useEffect(() => {
     const controller = new AbortController();
 
     const loadPlace = async () => {
@@ -109,6 +127,18 @@ const ServiceFilters = ({ onSearch }) => {
 
     return () => controller.abort();
   }, [filters.lat, filters.lng]);
+
+  useEffect(() => {
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        city: filters.city,
+        pincode: filters.pincode,
+        lat: filters.lat,
+        lng: filters.lng,
+      })
+    );
+  }, [filters.city, filters.pincode, filters.lat, filters.lng]);
 
   const handleChange = (event) => {
     setFilters((current) => ({
@@ -213,9 +243,7 @@ const ServiceFilters = ({ onSearch }) => {
           <div className="geo-coordinates">
             <strong>{placeLabel}</strong>
             <span>{mapReady ? filters.city : "Loading place details..."}</span>
-            <span>
-              {filters.lat}, {filters.lng}
-            </span>
+            <span>{filters.pincode || "Use area search or your current location"}</span>
           </div>
         </div>
       </section>
@@ -246,14 +274,8 @@ const ServiceFilters = ({ onSearch }) => {
             <option value="appliance repair">Appliance Repair</option>
           </select>
         </label>
-        <label className="field-shell">
-          <span>Latitude</span>
-          <input name="lat" placeholder="Latitude" value={filters.lat} onChange={handleChange} />
-        </label>
-        <label className="field-shell">
-          <span>Longitude</span>
-          <input name="lng" placeholder="Longitude" value={filters.lng} onChange={handleChange} />
-        </label>
+        <input type="hidden" name="lat" value={filters.lat} readOnly />
+        <input type="hidden" name="lng" value={filters.lng} readOnly />
         <button className="primary-button tall-button" type="submit">
           Search
         </button>

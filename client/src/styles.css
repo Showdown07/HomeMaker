@@ -360,7 +360,7 @@ textarea {
   display: grid;
   grid-template-columns: 1fr 1.1fr;
   gap: 1rem;
-  padding: 1rem;
+  padding: 0.9rem;
   border-radius: 30px;
   background: rgba(255, 250, 241, 0.66);
   border: 1px solid rgba(25, 49, 61, 0.08);
@@ -382,7 +382,7 @@ textarea {
 
 .geo-map-shell {
   position: relative;
-  min-height: 260px;
+  min-height: 220px;
   overflow: hidden;
   border-radius: 24px;
   border: 1px solid rgba(25, 49, 61, 0.08);
@@ -392,7 +392,7 @@ textarea {
 .geo-map-frame {
   width: 100%;
   height: 100%;
-  min-height: 260px;
+  min-height: 220px;
   border: 0;
 }
 
@@ -420,6 +420,14 @@ textarea {
   border-radius: 18px;
   background: rgba(255, 255, 255, 0.8);
   text-align: left;
+}
+
+.geo-coordinates strong {
+  font-size: 0.95rem;
+}
+
+.geo-coordinates span {
+  font-size: 0.82rem;
 }
 
 .field-shell {

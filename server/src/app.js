@@ -14,6 +14,8 @@ import reviewRoutes from "./routes/reviewRoutes.js";
 import notificationRoutes from "./routes/notificationRoutes.js";
 import providerRoutes from "./routes/providerRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
+import localContactRoutes from "./routes/localContactRoutes.js";
+import helpRequestRoutes from "./routes/helpRequestRoutes.js";
 
 dotenv.config();
 
@@ -63,6 +65,8 @@ app.use("/api/bookings", bookingRateLimiter, bookingRoutes);
 app.use("/api/reviews", reviewRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/providers", providerRoutes);
+app.use("/api/local-contacts", localContactRoutes);
+app.use("/api/help-requests", helpRequestRoutes);
 app.use("/api/admin", adminRoutes);
 
 app.use(notFound);

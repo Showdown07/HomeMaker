@@ -3,6 +3,7 @@ import request from "supertest";
 import app from "../app.js";
 import Review from "../models/Review.js";
 import Notification from "../models/Notification.js";
+import LocalContact from "../models/LocalContact.js";
 import { createAuthFixtures } from "./helpers.js";
 import { clearTestDatabase, setupTestDatabase, teardownTestDatabase } from "./setup.js";
 
@@ -157,6 +158,88 @@ addTest("rejects invalid booking slot format", async () => {
 
   assert.equal(response.status, 400);
   assert.match(response.body.message, /HH:MM/i);
+});
+
+addTest("admin can add a local contact and users can see it in the public directory", async () => {
+  const { admin } = await createAuthFixtures();
+
+  const adminLogin = await request(app).post("/api/auth/login").send({
+    email: admin.email,
+    password: "password123",
+  });
+
+  const createResponse = await request(app)
+    .post("/api/admin/local-contacts")
+    .set("Authorization", `Bearer ${adminLogin.body.data.token}`)
+    .send({
+      name: "Metro Electric Works",
+      category: "electrician",
+      phone: "9000011111",
+      city: "Bengaluru",
+      pincode: "560001",
+      area: "Indiranagar",
+      notes: "Field collected offline electrician contact",
+    });
+
+  assert.equal(createResponse.status, 201);
+
+  const publicResponse = await request(app).get("/api/local-contacts").query({
+    city: "Bengaluru",
+    pincode: "560001",
+    category: "electrician",
+  });
+
+  assert.equal(publicResponse.status, 200);
+  assert.equal(publicResponse.body.data.length, 1);
+
+  const contacts = await LocalContact.find({});
+  assert.equal(contacts.length, 1);
+});
+
+addTest("user can submit a help request and admin can review it", async () => {
+  const { user, admin } = await createAuthFixtures();
+
+  const userLogin = await request(app).post("/api/auth/login").send({
+    email: user.email,
+    password: "password123",
+  });
+  const adminLogin = await request(app).post("/api/auth/login").send({
+    email: admin.email,
+    password: "password123",
+  });
+
+  const createResponse = await request(app)
+    .post("/api/help-requests")
+    .set("Authorization", `Bearer ${userLogin.body.data.token}`)
+    .send({
+      category: "electrician",
+      title: "Urgent wiring issue",
+      description: "Need an electrician for a short circuit issue",
+      city: "Bengaluru",
+      pincode: "560001",
+      area: "Indiranagar",
+      address: "12 Demo Street",
+      phone: "9999999999",
+      lat: 12.9784,
+      lng: 77.6408,
+    });
+
+  assert.equal(createResponse.status, 201);
+
+  const adminListResponse = await request(app)
+    .get("/api/admin/help-requests")
+    .set("Authorization", `Bearer ${adminLogin.body.data.token}`);
+
+  assert.equal(adminListResponse.status, 200);
+  assert.equal(adminListResponse.body.data.length, 1);
+
+  const statusUpdateResponse = await request(app)
+    .put(`/api/admin/help-requests/${createResponse.body.data._id}/status`)
+    .set("Authorization", `Bearer ${adminLogin.body.data.token}`)
+    .send({ status: "reviewing" });
+
+  assert.equal(statusUpdateResponse.status, 200);
+  assert.equal(statusUpdateResponse.body.data.status, "reviewing");
 });
 
 let failures = 0;

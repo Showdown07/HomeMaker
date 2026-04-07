@@ -3,15 +3,18 @@ import User from "../models/User.js";
 import Service from "../models/Service.js";
 import Booking from "../models/Booking.js";
 import Review from "../models/Review.js";
+import LocalContact from "../models/LocalContact.js";
+import HelpRequest from "../models/HelpRequest.js";
 
 export const getAdminOverview = asyncHandler(async (_req, res) => {
-  const [users, providers, admins, services, bookings, reviews] = await Promise.all([
+  const [users, providers, admins, services, bookings, reviews, helpRequests] = await Promise.all([
     User.countDocuments({ role: "user" }),
     User.countDocuments({ role: "provider" }),
     User.countDocuments({ role: "admin" }),
     Service.countDocuments({}),
     Booking.countDocuments({}),
     Review.countDocuments({}),
+    HelpRequest.countDocuments({}),
   ]);
 
   const bookingStatusCounts = await Booking.aggregate([
@@ -22,6 +25,7 @@ export const getAdminOverview = asyncHandler(async (_req, res) => {
     success: true,
     data: {
       stats: { users, providers, admins, services, bookings, reviews },
+      helpRequests,
       bookingStatusCounts,
     },
   });
@@ -93,4 +97,72 @@ export const toggleServiceActivation = asyncHandler(async (req, res) => {
   await service.save();
 
   res.json({ success: true, data: service });
+});
+
+export const getAdminLocalContacts = asyncHandler(async (_req, res) => {
+  const contacts = await LocalContact.find({})
+    .populate("addedBy", "name email")
+    .sort({ createdAt: -1 });
+
+  res.json({ success: true, data: contacts });
+});
+
+export const createLocalContact = asyncHandler(async (req, res) => {
+  const contact = await LocalContact.create({
+    ...req.body,
+    addedBy: req.user._id,
+  });
+
+  res.status(201).json({ success: true, data: contact });
+});
+
+export const updateLocalContact = asyncHandler(async (req, res) => {
+  const contact = await LocalContact.findById(req.params.id);
+  if (!contact) {
+    res.status(404);
+    throw new Error("Local contact not found");
+  }
+
+  Object.assign(contact, req.body);
+  await contact.save();
+
+  res.json({ success: true, data: contact });
+});
+
+export const deleteLocalContact = asyncHandler(async (req, res) => {
+  const contact = await LocalContact.findById(req.params.id);
+  if (!contact) {
+    res.status(404);
+    throw new Error("Local contact not found");
+  }
+
+  await contact.deleteOne();
+  res.json({ success: true, message: "Local contact deleted" });
+});
+
+export const getAdminHelpRequests = asyncHandler(async (_req, res) => {
+  const helpRequests = await HelpRequest.find({})
+    .populate("user", "name email city")
+    .sort({ createdAt: -1 });
+
+  res.json({ success: true, data: helpRequests });
+});
+
+export const updateHelpRequestStatus = asyncHandler(async (req, res) => {
+  const helpRequest = await HelpRequest.findById(req.params.id);
+  if (!helpRequest) {
+    res.status(404);
+    throw new Error("Help request not found");
+  }
+
+  const allowedStatuses = new Set(["open", "reviewing", "resolved"]);
+  if (!allowedStatuses.has(req.body.status)) {
+    res.status(400);
+    throw new Error("Invalid help request status");
+  }
+
+  helpRequest.status = req.body.status;
+  await helpRequest.save();
+
+  res.json({ success: true, data: helpRequest });
 });

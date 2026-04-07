@@ -4,6 +4,8 @@ import User from "../models/User.js";
 import Service from "../models/Service.js";
 import Booking from "../models/Booking.js";
 import Review from "../models/Review.js";
+import LocalContact from "../models/LocalContact.js";
+import HelpRequest from "../models/HelpRequest.js";
 
 dotenv.config();
 await connectDB();
@@ -12,6 +14,8 @@ await User.deleteMany();
 await Service.deleteMany();
 await Booking.deleteMany();
 await Review.deleteMany();
+await LocalContact.deleteMany();
+await HelpRequest.deleteMany();
 
 const provider = await User.create({
   name: "Ravi Kumar",
@@ -38,7 +42,7 @@ await User.create({
   location: { type: "Point", coordinates: [77.6, 12.97] },
 });
 
-await User.create({
+const admin = await User.create({
   name: "Admin Console",
   email: "admin@example.com",
   password: "password123",
@@ -68,6 +72,32 @@ await Service.create([
     pincode: "560001",
     provider: provider._id,
     tags: ["verified", "fast"],
+  },
+]);
+
+await LocalContact.create([
+  {
+    name: "Shankar Plumbing Works",
+    category: "plumber",
+    phone: "9876543210",
+    alternatePhone: "9876500000",
+    city: "Bengaluru",
+    pincode: "560001",
+    area: "MG Road",
+    address: "MG Road, Bengaluru",
+    notes: "Field-verified local plumber, not onboarded on platform yet.",
+    addedBy: admin._id,
+  },
+  {
+    name: "Lakshmi Home Cleaning",
+    category: "cleaning",
+    phone: "9123456780",
+    city: "Bengaluru",
+    pincode: "560001",
+    area: "Indiranagar",
+    address: "Indiranagar, Bengaluru",
+    notes: "Neighborhood cleaning contact collected by admin field team.",
+    addedBy: admin._id,
   },
 ]);
 
