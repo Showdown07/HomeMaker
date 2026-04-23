@@ -10,6 +10,10 @@ export const createRateLimiter = ({
   message = "Too many requests, please try again later",
 }) => {
   return (req, res, next) => {
+    if (process.env.NODE_ENV === "test") {
+      return next();
+    }
+
     const key = `${req.originalUrl}:${getClientKey(req)}`;
     const now = Date.now();
     const entry = stores.get(key);

@@ -8,6 +8,8 @@ const initialState = {
   category: "",
   lat: "12.9716",
   lng: "77.5946",
+  minPrice: "",
+  minRating: "",
 };
 
 const presetLocations = [
@@ -104,10 +106,12 @@ const ServiceFilters = ({ onSearch }) => {
           address.suburb ||
           address.county ||
           filters.city;
+        const resolvedPincode = address.postcode || filters.pincode || "";
 
         setFilters((current) => ({
           ...current,
           city: resolvedCity || current.city,
+          pincode: resolvedPincode,
         }));
         setPlaceLabel(
           data.name ||
@@ -136,9 +140,18 @@ const ServiceFilters = ({ onSearch }) => {
         pincode: filters.pincode,
         lat: filters.lat,
         lng: filters.lng,
+        minPrice: filters.minPrice,
+        minRating: filters.minRating,
       })
     );
-  }, [filters.city, filters.pincode, filters.lat, filters.lng]);
+  }, [
+    filters.city,
+    filters.pincode,
+    filters.lat,
+    filters.lng,
+    filters.minPrice,
+    filters.minRating,
+  ]);
 
   const handleChange = (event) => {
     setFilters((current) => ({
@@ -272,6 +285,24 @@ const ServiceFilters = ({ onSearch }) => {
             <option value="plumber">Plumber</option>
             <option value="painting">Painting</option>
             <option value="appliance repair">Appliance Repair</option>
+          </select>
+        </label>
+        <label className="field-shell">
+          <span>Min price</span>
+          <input
+            name="minPrice"
+            placeholder="Rs."
+            value={filters.minPrice}
+            onChange={handleChange}
+          />
+        </label>
+        <label className="field-shell">
+          <span>Min rating</span>
+          <select name="minRating" value={filters.minRating} onChange={handleChange}>
+            <option value="">Any rating</option>
+            <option value="3">3+ stars</option>
+            <option value="4">4+ stars</option>
+            <option value="4.5">4.5+ stars</option>
           </select>
         </label>
         <input type="hidden" name="lat" value={filters.lat} readOnly />

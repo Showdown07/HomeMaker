@@ -25,28 +25,48 @@ export const createService = asyncHandler(async (req, res) => {
 });
 
 export const getServices = asyncHandler(async (req, res) => {
-  const { city, pincode, category, lat, lng, maxDistance = 25000 } = req.query;
+  const {
+    city,
+    pincode,
+    category,
+    lat,
+    lng,
+    maxDistance = 25000,
+    minPrice,
+    maxPrice,
+    minRating,
+  } = req.query;
   const serviceQuery = { isActive: true };
 
   if (city) serviceQuery.city = new RegExp(city, "i");
   if (pincode) serviceQuery.pincode = pincode;
   if (category) serviceQuery.category = category;
+  if (minPrice || maxPrice) {
+    serviceQuery.price = {};
+    if (minPrice) serviceQuery.price.$gte = Number(minPrice);
+    if (maxPrice) serviceQuery.price.$lte = Number(maxPrice);
+  }
 
   const services = await Service.find(serviceQuery).populate("provider");
 
-  let enrichedServices = services.map((service) => ({
-    _id: service._id,
-    name: service.name,
-    description: service.description,
-    category: service.category,
-    price: service.price,
-    city: service.city,
-    pincode: service.pincode,
-    durationMinutes: service.durationMinutes,
-    tags: service.tags,
-    provider: service.provider,
-    distanceMeters: null,
-  }));
+  let enrichedServices = services
+    .filter((service) => {
+      if (!minRating) return true;
+      return Number(service.provider?.averageRating || 0) >= Number(minRating);
+    })
+    .map((service) => ({
+      _id: service._id,
+      name: service.name,
+      description: service.description,
+      category: service.category,
+      price: service.price,
+      city: service.city,
+      pincode: service.pincode,
+      durationMinutes: service.durationMinutes,
+      tags: service.tags,
+      provider: service.provider,
+      distanceMeters: null,
+    }));
 
   if (lat && lng) {
     const nearbyProviders = await User.aggregate([

@@ -82,3 +82,52 @@ export const loginUser = asyncHandler(async (req, res) => {
 export const getProfile = asyncHandler(async (req, res) => {
   res.json({ success: true, data: req.user });
 });
+
+export const updateProfile = asyncHandler(async (req, res) => {
+  const allowedFields = [
+    "name",
+    "phone",
+    "city",
+    "pincode",
+    "address",
+    "bio",
+    "skills",
+    "location",
+  ];
+
+  const updates = {};
+  for (const field of allowedFields) {
+    if (req.body[field] !== undefined) {
+      updates[field] = req.body[field];
+    }
+  }
+
+  if (req.body.lat && req.body.lng) {
+    updates.location = {
+      type: "Point",
+      coordinates: [Number(req.body.lng), Number(req.body.lat)],
+    };
+  }
+
+  const updatedUser = await User.findByIdAndUpdate(req.user._id, updates, {
+    new: true,
+    runValidators: true,
+  }).select("-password");
+
+  res.json({
+    success: true,
+    data: {
+      _id: updatedUser._id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+      role: updatedUser.role,
+      phone: updatedUser.phone,
+      city: updatedUser.city,
+      pincode: updatedUser.pincode,
+      address: updatedUser.address,
+      bio: updatedUser.bio,
+      skills: updatedUser.skills,
+      location: updatedUser.location,
+    },
+  });
+});

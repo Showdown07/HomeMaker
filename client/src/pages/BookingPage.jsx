@@ -62,7 +62,8 @@ const BookingPage = () => {
     try {
       setSubmitting(true);
       setSuccessMessage("");
-      await api.post("/bookings", { ...form, serviceId: id });
+      const { data } = await api.post("/bookings", { ...form, serviceId: id });
+      await api.put(`/bookings/${data.data._id}/pay`);
       setSuccessMessage("Booking confirmed. Redirecting to your dashboard...");
       setTimeout(() => navigate("/dashboard"), 1200);
     } catch (err) {
@@ -98,7 +99,7 @@ const BookingPage = () => {
       <section className="auth-card wide booking-card">
         <h2>Confirm your slot</h2>
         <p className="muted-text">
-          Mock Razorpay payment is auto-marked paid once the booking is created for this demo flow.
+          Mock Razorpay creates a demo payment after the slot is reserved, then marks it paid.
         </p>
 
         <div className="slot-picker">

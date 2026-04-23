@@ -1,6 +1,34 @@
-# Home Services Marketplace
+# HomeSphere
 
-Production-ready MERN home services marketplace inspired by Urban Company. The app includes JWT authentication, role-based access, service discovery by city or pincode, provider ratings, bookings, mock Razorpay payments, reviews, real-time notifications, geolocation search, AI-style service ranking, provider availability scheduling, Docker deployment, and CI support.
+HomeSphere is a MERN home services marketplace for booking trusted local providers. It includes customer booking, provider scheduling, admin operations, local offline contact support, help requests, real-time notifications, geolocation discovery, and Docker-based deployment.
+
+## Tech Stack
+
+- Frontend: React, Vite, Axios, Socket.IO client
+- Backend: Node.js, Express, Socket.IO
+- Database: MongoDB, Mongoose
+- Auth: JWT, bcrypt
+- Deployment: Docker, Docker Compose, nginx
+- CI: GitHub Actions
+
+## Core Features
+
+- JWT authentication with `user`, `provider`, and `admin` roles
+- Service discovery by city, pincode, category, minimum price, minimum rating, and location
+- Browser geolocation with saved last-used location
+- MongoDB geospatial provider matching
+- AI-style ranking using provider rating and distance
+- Provider public profiles
+- Provider availability scheduling
+- Booking creation, status updates, cancellation, and mock Razorpay-style payment flow
+- Booking chat between user and provider
+- Reviews with star picker after completed bookings
+- Real-time notifications
+- Admin dashboard for users, services, bookings, reviews, local contacts, and help requests
+- Admin-managed local contacts directory for offline providers
+- Local contacts directory is protected and visible only to logged-in users/admins
+- User help-request flow for local service needs
+- Responsive blue/white UI with sharper panels
 
 ## Folder Structure
 
@@ -13,6 +41,7 @@ home-services-marketplace/
 |   |   |-- context/
 |   |   `-- pages/
 |   |-- Dockerfile
+|   |-- nginx.conf
 |   `-- package.json
 |-- server/
 |   |-- src/
@@ -24,6 +53,7 @@ home-services-marketplace/
 |   |   |-- routes/
 |   |   |-- seeds/
 |   |   |-- services/
+|   |   |-- tests/
 |   |   `-- utils/
 |   |-- Dockerfile
 |   `-- package.json
@@ -32,29 +62,7 @@ home-services-marketplace/
 `-- package.json
 ```
 
-## Backend Highlights
-
-- MVC Express server with modular routes and controllers
-- JWT auth + bcrypt password hashing
-- Roles: `user`, `provider`, `admin`
-- MongoDB geospatial provider queries with `2dsphere`
-- AI-based ranking score using provider rating and distance
-- WebSocket notifications using Socket.IO
-- Provider weekly availability and booking slot validation
-- Mock Razorpay-style paid booking flow
-- Rate limiting for authentication and booking endpoints
-- Safer CORS allowlist handling, request size limits, and stricter JWT error handling
-
-## Frontend Highlights
-
-- React + Vite with hooks and route protection
-- Pages for home, details, booking, auth, user dashboard, provider dashboard
-- Live notification panel over WebSockets
-- Responsive service cards, filters, dashboard views, and booking forms
-
 ## Environment Variables
-
-### Server
 
 Create `server/.env`:
 
@@ -65,10 +73,6 @@ JWT_SECRET=change_me
 CLIENT_URL=http://localhost:5173
 ```
 
-`CLIENT_URL` can also be a comma-separated list if you need to allow multiple frontend origins.
-
-### Client
-
 Create `client/.env`:
 
 ```env
@@ -76,67 +80,151 @@ VITE_API_URL=http://localhost:5000/api
 VITE_SOCKET_URL=http://localhost:5000
 ```
 
-## Run Locally
+For Docker Compose, these values are provided in `docker-compose.yml`.
 
-1. Install dependencies:
+## Local Setup
+
+From the project root:
 
 ```powershell
+cd D:\home-services-marketplace
 npm install
 npm install --workspace server
 npm install --workspace client
 ```
 
-2. Start MongoDB locally or with Compass connection `mongodb://localhost:27017`.
-
-3. Seed sample data:
+Make sure MongoDB is running locally, then seed demo data:
 
 ```powershell
 npm run seed --workspace server
 ```
 
-4. Start the app:
+Run the app:
 
 ```powershell
 npm run dev
 ```
 
-5. Open:
+Useful URLs:
 
 - Frontend: `http://localhost:5173`
-- Backend: `http://localhost:5000/api`
-
-## Run Tests
-
-The API regression suite uses your local MongoDB service with an isolated database named `home-services-test`.
-
-```powershell
-cd server
-npm test
-```
+- Backend health: `http://localhost:5000/api/health`
 
 ## Demo Accounts
 
-- User: `user@example.com` / `password123`
-- Provider: `provider@example.com` / `password123`
+```text
+User:
+user@example.com
+password123
 
-## Docker Deployment
+Provider:
+provider@example.com
+password123
+
+Admin:
+admin@example.com
+password123
+```
+
+## Tests And Build
+
+Backend regression tests:
 
 ```powershell
-docker compose up --build
+cd D:\home-services-marketplace\server
+npm test
+```
+
+Frontend production build:
+
+```powershell
+cd D:\home-services-marketplace\client
+npm run build
+```
+
+Root frontend build command:
+
+```powershell
+cd D:\home-services-marketplace
+npm run build
+```
+
+## Docker Desktop Deployment
+
+Start Docker Desktop first, then from the project root run:
+
+```powershell
+cd D:\home-services-marketplace
+docker compose up --build -d
 ```
 
 This starts:
 
-- MongoDB on port `27017`
-- Backend on port `5000`
-- Frontend on port `80`
+- MongoDB: `localhost:27017`
+- Backend API: `http://localhost:5001/api`
+- Frontend: `http://localhost`
+
+Check running containers:
+
+```powershell
+docker compose ps
+```
+
+View logs:
+
+```powershell
+docker compose logs -f
+```
+
+Seed the Docker MongoDB database:
+
+```powershell
+docker compose exec server npm run seed
+```
+
+Stop the deployment:
+
+```powershell
+docker compose down
+```
+
+Reset Docker data completely:
+
+```powershell
+docker compose down -v
+```
+
+## Important Routes
+
+- `/` home and service discovery
+- `/services/:id` service details
+- `/book/:id` booking flow
+- `/dashboard` user bookings, reviews, chat, cancellation
+- `/provider` provider services, availability, bookings, chat
+- `/providers/:id` public provider profile
+- `/profile` onboarding/profile completion
+- `/local-contacts` protected offline local provider directory
+- `/admin` admin console
 
 ## CI/CD
 
-GitHub Actions workflow at `.github/workflows/ci.yml` installs dependencies and builds the frontend on every push to `main` or `master` and on pull requests.
+GitHub Actions workflow lives in `.github/workflows/ci.yml`.
+
+Current CI behavior:
+
+- installs dependencies
+- builds the frontend
+
+Recommended next CI improvement:
+
+- add MongoDB service container
+- run `npm test --workspace server`
+- build Docker images on `main`
 
 ## Notes
 
-- Reviews can only be submitted after a booking reaches `completed`.
-- Booking creation checks provider availability and overlapping slots.
-- Real-time notifications appear for providers on new bookings and for users on booking status changes.
+- Local contacts are admin-managed field data and are visible only after login.
+- Help requests require login before submission.
+- Payments are mock Razorpay-style and ready to be replaced with real Razorpay checkout.
+- Reviews are allowed only after booking status becomes `completed`.
+- Real-time notifications require the backend Socket.IO server to be running.

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import api from "../api/api.js";
 import ServiceCard from "../components/ServiceCard.jsx";
 import ServiceFilters from "../components/ServiceFilters.jsx";
@@ -15,22 +16,22 @@ const CATEGORY_LIST = [
 
 const HOW_IT_WORKS = [
   {
-    step: "01",
-    title: "Search and shortlist",
+    step: "Pick",
+    title: "Tell us what you need",
     description:
-      "Browse providers in your chosen area with ranking that blends rating and travel distance.",
+      "Choose a service, set your area, and instantly see trusted helpers nearby.",
   },
   {
-    step: "02",
-    title: "Reserve a real slot",
+    step: "Book",
+    title: "Choose a time that works",
     description:
-      "Choose a live availability window that fits your day instead of waiting for a callback.",
+      "Select an available slot, add your address, and confirm the booking in one flow.",
   },
   {
-    step: "03",
-    title: "Track and review",
+    step: "Done",
+    title: "Relax while we keep you updated",
     description:
-      "Follow the booking, receive notifications, and rate the final experience once it is done.",
+      "Chat with the provider, get status updates, and review the service after completion.",
   },
 ];
 
@@ -72,16 +73,19 @@ const HomePage = () => {
   const fetchServices = async (params = {}) => {
     try {
       setLoading(true);
-      const [{ data: serviceData }, { data: contactData }] = await Promise.all([
-        api.get("/services", { params }),
-        api.get("/local-contacts", {
+      const { data: serviceData } = await api.get("/services", { params });
+      let contactData = { data: [] };
+
+      if (auth.user?.role === "user" || auth.user?.role === "admin") {
+        const { data } = await api.get("/local-contacts", {
           params: {
             city: params.city,
             pincode: params.pincode,
             category: params.category,
           },
-        }),
-      ]);
+        });
+        contactData = data;
+      }
 
       setServices(serviceData.data);
       setLocalContacts(contactData.data);
@@ -100,12 +104,14 @@ const HomePage = () => {
   };
 
   useEffect(() => {
+    if (auth.loading) return;
+
     fetchServices({
       city: "Bengaluru",
       lat: "12.9716",
       lng: "77.5946",
     });
-  }, []);
+  }, [auth.loading, auth.user?.role]);
 
   useEffect(() => {
     if (!auth.token || (auth.user?.role !== "user" && auth.user?.role !== "admin")) {
@@ -173,24 +179,23 @@ const HomePage = () => {
     <div className="stack-xl">
       <section className="hero">
         <div className="hero-copy">
-          <span className="eyebrow">Crafted for modern homes</span>
-          <h1>Book home care that feels curated, not crowded.</h1>
+          <span className="eyebrow">Modern home services</span>
+          <h1>Book trusted help near you.</h1>
           <p>
-            Discover trusted professionals with live availability, geo-aware ranking, and a calmer
-            booking journey designed to feel premium from the first search.
+            Find verified providers, compare options, and reserve a real slot in minutes.
           </p>
           <div className="hero-metrics">
             <div className="metric-tile">
               <strong>{services.length || 0}</strong>
-              <span>Live services</span>
+              <span>Services</span>
             </div>
             <div className="metric-tile">
-              <strong>Real-time</strong>
-              <span>Notifications</span>
+              <strong>Live</strong>
+              <span>Updates</span>
             </div>
             <div className="metric-tile">
-              <strong>AI rank</strong>
-              <span>Distance + trust</span>
+              <strong>Smart</strong>
+              <span>Ranking</span>
             </div>
           </div>
         </div>
@@ -254,7 +259,6 @@ const HomePage = () => {
       <section>
         <div className="section-heading">
           <span className="eyebrow dark">How it works</span>
-          <h2>Three steps to a service you actually trust</h2>
         </div>
         <div className="how-it-works">
           {HOW_IT_WORKS.map((item) => (
@@ -278,17 +282,6 @@ const HomePage = () => {
         </p>
       </section>
 
-      <section className="section-banner">
-        <div>
-          <span className="eyebrow dark">Local helplines</span>
-          <h2>Offline contacts collected by the admin field team</h2>
-        </div>
-        <p>
-          These local providers are not registered on the platform yet, but admins can list trusted
-          nearby contacts by area, city, and service category for quick help.
-        </p>
-      </section>
-
       {loading && <div className="loading-bar" />}
       {message && <p className="success-text fade-in">Success: {message}</p>}
       {error && <p className="error-text fade-in">Attention: {error}</p>}
@@ -308,45 +301,25 @@ const HomePage = () => {
         )
       )}
 
-      {localContacts.length ? (
-        <section className="service-grid compact-grid">
-          {localContacts.map((contact) => (
-            <article className="compact-card" key={contact._id}>
-              <div className="service-card-top">
-                <span className="category-chip">{contact.category}</span>
-                <span className="soft-chip">{contact.area || contact.city}</span>
-              </div>
-              <div className="provider-card-mini">
-                <div className="provider-avatar">{contact.name.slice(0, 1).toUpperCase()}</div>
-                <div className="stack-xs">
-                  <strong>{contact.name}</strong>
-                  <span className="muted-text">
-                    {contact.notes || "Trusted local contact collected by the admin field team."}
-                  </span>
-                </div>
-              </div>
-              <div className="meta-grid">
-                <span>
-                  <strong>{contact.phone}</strong>
-                </span>
-                <span>{contact.alternatePhone || "No alternate number"}</span>
-                <span>{contact.city}</span>
-                <span>{contact.pincode || "No pincode"}</span>
-              </div>
-            </article>
-          ))}
-        </section>
-      ) : (
-        !loading && (
-          <section className="empty-state subtle">
-            <h3>No local helpline contacts for this area</h3>
-            <p>
-              The admin field directory has no extra contacts for {currentFilters.city || "this area"}
-              {" "}yet.
-            </p>
-          </section>
-        )
-      )}
+      <section className="local-directory-cta">
+        <div>
+          <span className="eyebrow dark">Local contacts</span>
+          <h2>Need offline provider numbers?</h2>
+          <p className="muted-text">
+            View admin-collected local contacts for providers who are not registered on the site yet.
+          </p>
+        </div>
+        <div className="local-directory-meta">
+          <span className="soft-chip">
+            {localContacts.length
+              ? `${localContacts.length} contacts near ${currentFilters.city || "your area"}`
+              : `Directory for ${currentFilters.city || "your area"}`}
+          </span>
+          <Link className="primary-link" to={auth.user ? "/local-contacts" : "/login"}>
+            {auth.user ? "Open local directory" : "Login to view directory"}
+          </Link>
+        </div>
+      </section>
 
       <section className="provider-layout">
         <section className="dashboard-card editorial-card">
@@ -408,6 +381,9 @@ const HomePage = () => {
             <section className="empty-state subtle">
               <h3>Login to request local help</h3>
               <p>Users can submit offline help needs once signed in.</p>
+              <Link className="primary-link" to="/login">
+                Login before continuing
+              </Link>
             </section>
           )}
         </section>

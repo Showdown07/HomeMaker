@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   mongodb:
     image: mongo:7
@@ -13,18 +11,21 @@ services:
     build:
       context: ./server
     ports:
-      - "5000:5000"
+      - "5001:5000"
     environment:
       PORT: 5000
       MONGO_URI: mongodb://mongodb:27017/home-services
       JWT_SECRET: change_me
-      CLIENT_URL: http://localhost
+      CLIENT_URL: http://localhost,http://localhost:80
     depends_on:
       - mongodb
 
   client:
     build:
       context: ./client
+      args:
+        VITE_API_URL: http://localhost:5001/api
+        VITE_SOCKET_URL: http://localhost:5001
     ports:
       - "80:80"
     depends_on:

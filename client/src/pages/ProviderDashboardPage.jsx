@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../api/api.js";
+import BookingChat from "../components/BookingChat.jsx";
 
 const emptyService = {
   name: "",
@@ -67,6 +68,17 @@ const ProviderDashboardPage = () => {
   const updateStatus = async (bookingId, status) => {
     await api.put(`/bookings/${bookingId}/status`, { status });
     loadData();
+  };
+
+  const cancelBooking = async (bookingId) => {
+    try {
+      setError("");
+      await api.put(`/bookings/${bookingId}/cancel`);
+      setMessage("Booking cancelled.");
+      loadData();
+    } catch (err) {
+      setError(err.response?.data?.message || "Unable to cancel booking");
+    }
   };
 
   const updateAvailabilityField = (index, field, value) => {
@@ -255,18 +267,28 @@ const ProviderDashboardPage = () => {
                 <div>
                   <strong>{booking.service?.name}</strong>
                   <p>
-                    {booking.user?.name} · {new Date(booking.bookingDate).toLocaleDateString()} · {booking.slotStart}-{booking.slotEnd}
+                    {booking.user?.name} | {new Date(booking.bookingDate).toLocaleDateString()} | {booking.slotStart}-{booking.slotEnd}
                   </p>
                 </div>
                 <div className="row-actions">
                   <span className={`status-pill status-${booking.status}`}>{booking.status}</span>
-                  <button className="ghost-button" onClick={() => updateStatus(booking._id, "confirmed")}>
-                    Confirm
-                  </button>
-                  <button className="ghost-button" onClick={() => updateStatus(booking._id, "completed")}>
-                    Complete
-                  </button>
+                  {!["completed", "cancelled"].includes(booking.status) && (
+                    <>
+                      <button className="ghost-button" onClick={() => updateStatus(booking._id, "confirmed")}>
+                        Confirm
+                      </button>
+                      <button className="ghost-button" onClick={() => updateStatus(booking._id, "completed")}>
+                        Complete
+                      </button>
+                      <button className="ghost-button" onClick={() => cancelBooking(booking._id)}>
+                        Cancel
+                      </button>
+                    </>
+                  )}
                 </div>
+                {!["completed", "cancelled"].includes(booking.status) && (
+                  <BookingChat bookingId={booking._id} />
+                )}
               </div>
             ))}
           </div>

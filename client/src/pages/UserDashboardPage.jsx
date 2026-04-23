@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../api/api.js";
+import BookingChat from "../components/BookingChat.jsx";
+import StarPicker from "../components/StarPicker.jsx";
 
 const UserDashboardPage = () => {
   const [bookings, setBookings] = useState([]);
@@ -22,14 +24,34 @@ const UserDashboardPage = () => {
 
   const submitReview = async (bookingId) => {
     const values = reviewForm[bookingId];
-    if (!values?.rating) return;
-    await api.post("/reviews", {
-      bookingId,
-      rating: Number(values.rating),
-      comment: values.comment,
-    });
-    setMessage("Review submitted successfully.");
-    await loadBookings();
+    if (!values?.rating) {
+      setError("Please pick a star rating first");
+      return;
+    }
+
+    try {
+      await api.post("/reviews", {
+        bookingId,
+        rating: Number(values.rating),
+        comment: values.comment,
+      });
+      setMessage("Review submitted successfully.");
+      setError("");
+      await loadBookings();
+    } catch (err) {
+      setError(err.response?.data?.message || "Unable to submit review");
+    }
+  };
+
+  const cancelBooking = async (bookingId) => {
+    try {
+      await api.put(`/bookings/${bookingId}/cancel`);
+      setMessage("Booking cancelled.");
+      setError("");
+      await loadBookings();
+    } catch (err) {
+      setError(err.response?.data?.message || "Unable to cancel booking");
+    }
   };
 
   const setBookingReview = (bookingId, field, value) => {
@@ -44,7 +66,9 @@ const UserDashboardPage = () => {
 
   const stats = {
     total: bookings.length,
-    active: bookings.filter((booking) => ["pending", "confirmed", "in-progress"].includes(booking.status)).length,
+    active: bookings.filter((booking) =>
+      ["pending", "confirmed", "in-progress"].includes(booking.status),
+    ).length,
     completed: bookings.filter((booking) => booking.status === "completed").length,
   };
 
@@ -70,8 +94,10 @@ const UserDashboardPage = () => {
           </div>
         </div>
       </section>
+
       {error && <p className="error-text">{error}</p>}
       {message && <p className="success-text">{message}</p>}
+
       <div className="stack-lg">
         {bookings.length ? (
           bookings.map((booking) => (
@@ -80,11 +106,20 @@ const UserDashboardPage = () => {
                 <div>
                   <h3>{booking.service?.name}</h3>
                   <p>
-                    {new Date(booking.bookingDate).toLocaleDateString()} · {booking.slotStart} - {booking.slotEnd}
+                    {new Date(booking.bookingDate).toLocaleDateString()} | {booking.slotStart} -{" "}
+                    {booking.slotEnd}
                   </p>
                 </div>
-                <span className={`status-pill status-${booking.status}`}>{booking.status}</span>
+                <div className="row-actions">
+                  <span className={`status-pill status-${booking.status}`}>{booking.status}</span>
+                  {!["completed", "cancelled"].includes(booking.status) && (
+                    <button className="ghost-button" onClick={() => cancelBooking(booking._id)}>
+                      Cancel
+                    </button>
+                  )}
+                </div>
               </div>
+
               <div className="booking-insights">
                 <div>
                   <span className="label-text">Provider</span>
@@ -99,25 +134,31 @@ const UserDashboardPage = () => {
                   <strong>{booking.address}</strong>
                 </div>
               </div>
+
               {booking.status === "completed" && (
                 <div className="review-panel">
-                  <h4>Leave a finishing note</h4>
+                  <h4>Rate your experience</h4>
                   <div className="review-form">
-                    <input
-                      placeholder="Rating out of 5"
-                      value={reviewForm[booking._id]?.rating || ""}
-                      onChange={(event) => setBookingReview(booking._id, "rating", event.target.value)}
+                    <StarPicker
+                      value={reviewForm[booking._id]?.rating || 0}
+                      onChange={(rating) => setBookingReview(booking._id, "rating", rating)}
                     />
                     <input
                       placeholder="What stood out?"
                       value={reviewForm[booking._id]?.comment || ""}
-                      onChange={(event) => setBookingReview(booking._id, "comment", event.target.value)}
+                      onChange={(event) =>
+                        setBookingReview(booking._id, "comment", event.target.value)
+                      }
                     />
                     <button className="primary-button" onClick={() => submitReview(booking._id)}>
                       Submit Review
                     </button>
                   </div>
                 </div>
+              )}
+
+              {!["completed", "cancelled"].includes(booking.status) && (
+                <BookingChat bookingId={booking._id} />
               )}
             </article>
           ))

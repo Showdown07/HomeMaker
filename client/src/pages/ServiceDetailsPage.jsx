@@ -98,6 +98,9 @@ const ServiceDetailsPage = () => {
                 <strong>{service.city}</strong>
               </div>
             </div>
+            <Link className="ghost-link" to={`/providers/${service.provider?._id}`}>
+              View full provider profile
+            </Link>
           </div>
         </section>
 

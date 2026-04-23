@@ -7,7 +7,7 @@ const StarRating = ({ rating }) => {
   for (let index = 1; index <= 5; index += 1) {
     stars.push(
       <span key={index} className={`star ${index <= fullStars ? "" : "empty"}`}>
-        *
+        ★
       </span>,
     );
   }

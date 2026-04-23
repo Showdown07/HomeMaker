@@ -1,25 +1,27 @@
-@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Source+Serif+4:wght@600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700;800&display=swap");
 
 :root {
-  --bg: #f5efe3;
-  --surface: rgba(255, 251, 245, 0.76);
-  --surface-strong: #fffaf1;
-  --text: #19313d;
-  --muted: #667784;
-  --brand: #146c52;
-  --brand-deep: #0d4738;
-  --highlight: #ff8f5a;
-  --border: rgba(25, 49, 61, 0.12);
-  --shadow: 0 24px 60px rgba(34, 40, 45, 0.12);
-  --shadow-soft: 0 10px 30px rgba(34, 40, 45, 0.08);
-  --font-body: "Manrope", "Segoe UI", sans-serif;
-  --font-display: "Source Serif 4", Georgia, serif;
+  --bg: #ffffff;
+  --surface: #ffffff;
+  --surface-strong: #f8fbff;
+  --text: #122033;
+  --muted: #64748b;
+  --brand: #3873f3;
+  --brand-deep: #1d4fd8;
+  --brand-soft: #e8f1ff;
+  --highlight: #38bdf8;
+  --border: rgba(37, 99, 235, 0.14);
+  --shadow: 0 18px 42px rgba(15, 23, 42, 0.08);
+  --shadow-soft: 0 8px 22px rgba(15, 23, 42, 0.06);
+  --radius-sm: 6px;
+  --radius: 8px;
+  --radius-lg: 10px;
+  --radius-xl: 12px;
+  --font-body: "Open Sans", "Segoe UI", sans-serif;
+  --font-display: "Open Sans", "Segoe UI", sans-serif;
   font-family: var(--font-body);
   color: var(--text);
-  background:
-    radial-gradient(circle at 10% 10%, rgba(255, 143, 90, 0.22), transparent 28%),
-    radial-gradient(circle at 88% 18%, rgba(20, 108, 82, 0.14), transparent 24%),
-    linear-gradient(180deg, #f7f0e4 0%, #f3ecdf 100%);
+  background: #ffffff;
 }
 
 * {
@@ -32,6 +34,9 @@ body {
   font-family: var(--font-body);
   line-height: 1.55;
   letter-spacing: -0.01em;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(56, 189, 248, 0.12), transparent 32%),
+    linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
 }
 
 a {
@@ -56,9 +61,9 @@ select,
 textarea {
   width: 100%;
   padding: 1rem 1.1rem;
-  border-radius: 18px;
-  border: 1px solid rgba(25, 49, 61, 0.08);
-  background: rgba(255, 255, 255, 0.74);
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  background: #ffffff;
   transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -66,8 +71,8 @@ input:focus,
 select:focus,
 textarea:focus {
   outline: none;
-  border-color: rgba(20, 108, 82, 0.4);
-  box-shadow: 0 0 0 4px rgba(20, 108, 82, 0.08);
+  border-color: rgba(37, 99, 235, 0.46);
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
 }
 
 textarea {
@@ -95,13 +100,13 @@ textarea {
 .ambient-one {
   top: -8rem;
   left: -8rem;
-  background: rgba(255, 143, 90, 0.24);
+  background: rgba(56, 189, 248, 0.18);
 }
 
 .ambient-two {
   right: -10rem;
   bottom: 6rem;
-  background: rgba(20, 108, 82, 0.16);
+  background: rgba(37, 99, 235, 0.12);
 }
 
 .topbar,
@@ -120,8 +125,8 @@ textarea {
   gap: 1rem;
   padding: 1rem 2rem;
   backdrop-filter: blur(18px);
-  background: rgba(245, 239, 227, 0.7);
-  border-bottom: 1px solid rgba(25, 49, 61, 0.08);
+  background: rgba(255, 255, 255, 0.86);
+  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
 }
 
 .brand {
@@ -149,7 +154,7 @@ textarea {
   justify-content: center;
   width: 2.7rem;
   height: 2.7rem;
-  border-radius: 18px;
+  border-radius: var(--radius-sm);
   background: linear-gradient(135deg, var(--brand-deep), var(--brand));
   color: white;
   box-shadow: var(--shadow-soft);
@@ -175,14 +180,14 @@ textarea {
 
 .nav {
   padding: 0.35rem;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.46);
-  border: 1px solid rgba(25, 49, 61, 0.07);
+  border-radius: var(--radius-sm);
+  background: #f8fbff;
+  border: 1px solid rgba(15, 23, 42, 0.08);
 }
 
 .nav a {
   padding: 0.7rem 1rem;
-  border-radius: 999px;
+  border-radius: 5px;
   color: var(--muted);
 }
 
@@ -200,7 +205,7 @@ textarea {
 .page {
   width: min(1240px, calc(100% - 2rem));
   margin: 0 auto;
-  padding: 2rem 0 5rem;
+  padding: 1.35rem 0 5rem;
 }
 
 .hero,
@@ -215,29 +220,31 @@ textarea {
 .metric-tile,
 .slot-tile,
 .availability-card {
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  box-shadow: var(--shadow);
-  backdrop-filter: blur(16px);
+  border: 1px solid rgba(15, 23, 42, 0.09);
+  box-shadow: 0 1px 0 rgba(15, 23, 42, 0.04), 0 12px 30px rgba(15, 23, 42, 0.04);
+  backdrop-filter: none;
 }
 
 .hero {
   display: grid;
-  grid-template-columns: 1.6fr 0.85fr;
+  grid-template-columns: 1.15fr 0.85fr;
   gap: 1.2rem;
-  padding: 2rem;
-  border-radius: 36px;
-  background: linear-gradient(145deg, rgba(16, 53, 47, 0.96), rgba(20, 108, 82, 0.88));
+  padding: 1.55rem;
+  border-radius: var(--radius-xl);
+  background:
+    linear-gradient(135deg, rgba(30, 64, 175, 0.96), rgba(37, 99, 235, 0.9)),
+    radial-gradient(circle at 90% 10%, rgba(56, 189, 248, 0.35), transparent 28%);
   color: white;
 }
 
 .hero-copy h1,
 .section-header h1,
 .booking-story h1 {
-  margin: 0.25rem 0 0.8rem;
+  margin: 0.2rem 0 0.65rem;
   font-family: var(--font-display);
-  font-size: clamp(2.6rem, 5vw, 5rem);
-  line-height: 1;
-  letter-spacing: -0.03em;
+  font-size: clamp(2.15rem, 4.1vw, 4rem);
+  line-height: 1.04;
+  letter-spacing: -0.035em;
 }
 
 .hero-copy p,
@@ -248,9 +255,10 @@ textarea {
 }
 
 .hero-copy p {
-  max-width: 42rem;
+  max-width: 34rem;
   color: rgba(255, 255, 255, 0.84);
-  font-size: 1.08rem;
+  font-size: 1rem;
+  margin: 0 0 1rem;
 }
 
 .hero-panel,
@@ -262,16 +270,18 @@ textarea {
 .booking-summary-card,
 .booking-story {
   background: var(--surface);
-  border-radius: 28px;
+  border-radius: var(--radius-lg);
 }
 
 .hero-panel {
-  padding: 1.5rem;
+  padding: 1.25rem;
   color: var(--text);
   display: flex;
   flex-direction: column;
-  gap: 0.8rem;
-  background: rgba(255, 248, 238, 0.86);
+  gap: 0.65rem;
+  background: rgba(255, 255, 255, 0.94);
+  border-left: 3px solid rgba(37, 99, 235, 0.24);
+  min-height: 0;
 }
 
 .hero-panel strong,
@@ -296,7 +306,7 @@ textarea {
 
 .hero-panel-header p {
   margin: 0;
-  font-size: 0.8rem;
+  font-size: 0.74rem;
   color: var(--muted);
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -307,12 +317,13 @@ textarea {
   grid-template-columns: 1.2fr 1fr;
   gap: 1rem;
   padding: 1.3rem 1.5rem;
+  border-left: 3px solid rgba(37, 99, 235, 0.22);
 }
 
 .eyebrow {
   display: inline-flex;
   padding: 0.42rem 0.9rem;
-  border-radius: 999px;
+  border-radius: var(--radius-sm);
   background: rgba(255, 255, 255, 0.14);
   color: inherit;
   font-size: 0.8rem;
@@ -321,7 +332,7 @@ textarea {
 }
 
 .eyebrow.dark {
-  background: rgba(20, 108, 82, 0.1);
+  background: var(--brand-soft);
   color: var(--brand-deep);
 }
 
@@ -334,7 +345,7 @@ textarea {
 }
 
 .stack-xl {
-  gap: 2rem;
+  gap: 1.5rem;
 }
 
 .stack-lg {
@@ -366,10 +377,10 @@ textarea {
 .filter-panel {
   grid-template-columns: repeat(6, minmax(0, 1fr));
   padding: 1rem;
-  border-radius: 30px;
-  background: rgba(255, 250, 241, 0.66);
-  border: 1px solid rgba(25, 49, 61, 0.08);
-  box-shadow: var(--shadow-soft);
+  border-radius: var(--radius-lg);
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.09);
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.04);
 }
 
 .filter-stack {
@@ -381,10 +392,10 @@ textarea {
   grid-template-columns: 0.9fr 1.1fr;
   gap: 0.85rem;
   padding: 0.75rem;
-  border-radius: 28px;
-  background: rgba(255, 250, 241, 0.66);
-  border: 1px solid rgba(25, 49, 61, 0.08);
-  box-shadow: var(--shadow-soft);
+  border-radius: var(--radius-lg);
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.09);
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.04);
 }
 
 .geo-panel-copy,
@@ -438,8 +449,8 @@ textarea {
   position: relative;
   min-height: 180px;
   overflow: hidden;
-  border-radius: 22px;
-  border: 1px solid rgba(25, 49, 61, 0.08);
+  border-radius: var(--radius);
+  border: 1px solid rgba(15, 23, 42, 0.1);
   background: rgba(255, 255, 255, 0.72);
 }
 
@@ -456,7 +467,7 @@ textarea {
   top: 0.8rem;
   z-index: 2;
   padding: 0.55rem 0.8rem;
-  border-radius: 999px;
+  border-radius: var(--radius-sm);
   background: rgba(255, 255, 255, 0.88);
   color: var(--text);
   border: 1px solid rgba(25, 49, 61, 0.08);
@@ -473,7 +484,7 @@ textarea {
   gap: 0.2rem;
   max-width: min(68%, 320px);
   padding: 0.7rem 0.8rem;
-  border-radius: 16px;
+  border-radius: var(--radius);
   background: rgba(255, 255, 255, 0.84);
   text-align: left;
   box-shadow: var(--shadow-soft);
@@ -522,10 +533,29 @@ textarea {
   padding: 1.45rem;
 }
 
+.service-card,
+.dashboard-card,
+.details-card,
+.auth-card,
+.booking-summary-card,
+.booking-story,
+.empty-state {
+  background: #ffffff;
+  border-radius: var(--radius-lg);
+}
+
+.dashboard-card,
+.details-card,
+.auth-card,
+.booking-story {
+  border-top: 3px solid rgba(37, 99, 235, 0.18);
+}
+
 .service-card {
   display: flex;
   flex-direction: column;
   gap: 0.85rem;
+  border-left: 3px solid rgba(37, 99, 235, 0.16);
 }
 
 .service-card-badges,
@@ -562,9 +592,9 @@ textarea {
 .booking-insights div,
 .summary-list span {
   padding: 0.9rem 1rem;
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.65);
-  border: 1px solid rgba(25, 49, 61, 0.06);
+  border-radius: var(--radius-sm);
+  background: #f8fbff;
+  border: 1px solid rgba(15, 23, 42, 0.07);
 }
 
 .primary-button,
@@ -575,7 +605,7 @@ textarea {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 999px;
+  border-radius: var(--radius-sm);
   padding: 0.95rem 1.35rem;
   border: none;
   cursor: pointer;
@@ -586,15 +616,15 @@ textarea {
 .primary-link {
   background: linear-gradient(135deg, var(--brand), var(--brand-deep));
   color: white;
-  box-shadow: 0 12px 24px rgba(20, 108, 82, 0.24);
+  box-shadow: 0 10px 20px rgba(37, 99, 235, 0.2);
 }
 
 .ghost-button,
 .ghost-link,
 .icon-button {
-  background: rgba(255, 255, 255, 0.45);
+  background: #ffffff;
   color: var(--text);
-  border: 1px solid rgba(25, 49, 61, 0.1);
+  border: 1px solid rgba(15, 23, 42, 0.12);
 }
 
 .primary-button:hover,
@@ -634,6 +664,12 @@ textarea {
   grid-template-columns: 1.2fr 1fr;
 }
 
+.profile-layout {
+  display: grid;
+  grid-template-columns: 0.85fr 1.15fr;
+  gap: 1rem;
+}
+
 .auth-layout,
 .details-hero {
   grid-template-columns: 0.95fr 1.05fr;
@@ -642,10 +678,10 @@ textarea {
 .auth-sidepanel,
 .details-sidepanel {
   padding: 1.6rem;
-  border-radius: 30px;
-  background: linear-gradient(180deg, rgba(255, 250, 241, 0.75), rgba(255, 246, 234, 0.62));
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  box-shadow: var(--shadow);
+  border-radius: var(--radius-lg);
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.09);
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.05);
 }
 
 .auth-sidepanel h1,
@@ -668,7 +704,7 @@ textarea {
 }
 
 .booking-story {
-  background: linear-gradient(180deg, rgba(255, 250, 241, 0.8), rgba(255, 246, 234, 0.65));
+  background: #ffffff;
 }
 
 .slot-picker {
@@ -684,13 +720,13 @@ textarea {
   gap: 0.25rem;
   align-items: flex-start;
   padding: 1rem;
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.7);
-  border: 1px solid rgba(25, 49, 61, 0.08);
+  border-radius: var(--radius);
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.1);
 }
 
 .slot-tile.active {
-  background: linear-gradient(135deg, rgba(20, 108, 82, 0.96), rgba(13, 71, 56, 0.92));
+  background: linear-gradient(135deg, var(--brand), var(--brand-deep));
   color: white;
 }
 
@@ -699,13 +735,107 @@ textarea {
 .provider-highlight,
 .review-panel {
   padding: 1rem;
-  border-radius: 20px;
+  border-radius: var(--radius);
   background: var(--surface-strong);
-  border: 1px solid rgba(25, 49, 61, 0.08);
+  border: 1px solid rgba(15, 23, 42, 0.08);
 }
 
 .review-panel {
   margin-top: 1rem;
+}
+
+.review-form {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.star-picker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.star-picker button {
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  background: rgba(255, 255, 255, 0.66);
+  color: rgba(25, 49, 61, 0.28);
+  cursor: pointer;
+  font-size: 1.15rem;
+  transition: transform 0.18s ease, color 0.18s ease, background 0.18s ease;
+}
+
+.star-picker button.active,
+.star-picker button:hover {
+  background: var(--brand-soft);
+  color: var(--brand-deep);
+  transform: translateY(-1px);
+}
+
+.chat-panel {
+  grid-column: 1 / -1;
+  margin-top: 1rem;
+  padding: 1rem;
+  border-radius: var(--radius);
+  background: #f8fbff;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+.chat-thread {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  max-height: 240px;
+  overflow: auto;
+  padding: 0.85rem 0;
+}
+
+.chat-bubble {
+  width: min(82%, 520px);
+  padding: 0.8rem 0.9rem;
+  border-radius: var(--radius);
+  background: var(--surface-strong);
+  border: 1px solid rgba(25, 49, 61, 0.08);
+}
+
+.chat-bubble.mine {
+  align-self: flex-end;
+  border-radius: var(--radius);
+  background: var(--brand-soft);
+}
+
+.chat-bubble p {
+  margin: 0.2rem 0 0;
+}
+
+.chat-form {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.7rem;
+}
+
+.onboarding-card {
+  align-self: start;
+}
+
+.profile-progress {
+  width: 100%;
+  height: 0.7rem;
+  overflow: hidden;
+  border-radius: var(--radius-sm);
+  background: rgba(15, 23, 42, 0.08);
+  margin: 1.1rem 0 0.55rem;
+}
+
+.profile-progress span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--brand), var(--highlight));
 }
 
 .notification-wrapper {
@@ -718,8 +848,9 @@ textarea {
   top: calc(100% + 0.75rem);
   width: 360px;
   padding: 1rem;
-  border-radius: 24px;
-  background: rgba(255, 250, 241, 0.96);
+  border-radius: var(--radius-lg);
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.09);
 }
 
 .notification-item {
@@ -731,7 +862,7 @@ textarea {
   padding: 0.9rem 0;
   background: transparent;
   border: none;
-  border-top: 1px solid rgba(25, 49, 61, 0.08);
+  border-top: 1px solid rgba(15, 23, 42, 0.08);
   cursor: pointer;
 }
 
@@ -757,25 +888,26 @@ textarea {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 999px;
+  border-radius: var(--radius-sm);
   padding: 0.38rem 0.78rem;
   font-size: 0.8rem;
 }
 
 .badge,
 .category-chip {
-  background: rgba(20, 108, 82, 0.1);
+  background: var(--brand-soft);
   color: var(--brand-deep);
 }
 
 .distance-chip,
 .user-pill,
 .soft-chip {
-  background: rgba(255, 143, 90, 0.12);
+  background: #eef6ff;
+  color: #31577d;
 }
 
 .trending-badge {
-  background: rgba(20, 108, 82, 0.12);
+  background: var(--brand-soft);
   color: var(--brand-deep);
   font-size: 0.72rem;
   letter-spacing: 0.06em;
@@ -783,34 +915,34 @@ textarea {
 }
 
 .status-pill {
-  background: rgba(25, 49, 61, 0.08);
+  background: rgba(15, 23, 42, 0.07);
   text-transform: capitalize;
 }
 
 .status-completed {
-  background: rgba(20, 108, 82, 0.12);
+  background: rgba(37, 99, 235, 0.12);
 }
 
 .status-confirmed,
 .status-in-progress {
-  background: rgba(255, 143, 90, 0.16);
+  background: rgba(56, 189, 248, 0.16);
 }
 
 .metric-tile {
   min-width: 118px;
-  padding: 1rem;
-  border-radius: 22px;
+  padding: 0.75rem 0.85rem;
+  border-radius: var(--radius);
   background: rgba(255, 255, 255, 0.12);
 }
 
 .metric-tile strong {
   display: block;
-  margin-bottom: 0.2rem;
-  font-size: 1.15rem;
+  margin-bottom: 0.1rem;
+  font-size: 1rem;
 }
 
 .compact .metric-tile {
-  background: rgba(255, 255, 255, 0.55);
+  background: #ffffff;
 }
 
 .section-header {
@@ -822,8 +954,8 @@ textarea {
 
 .availability-card {
   padding: 1rem;
-  border-radius: 22px;
-  background: rgba(255, 255, 255, 0.62);
+  border-radius: var(--radius);
+  background: #f8fbff;
 }
 
 .admin-tabs {
@@ -848,7 +980,7 @@ textarea {
 
 .empty-state {
   text-align: center;
-  background: rgba(255, 250, 241, 0.8);
+  background: #ffffff;
 }
 
 .empty-state.subtle {
@@ -861,7 +993,7 @@ textarea {
 }
 
 .error-text {
-  color: #c2571a;
+  color: #dc2626;
   font-weight: 600;
 }
 
@@ -895,9 +1027,9 @@ textarea {
   align-items: center;
   justify-content: center;
   padding: 0.6rem 1rem;
-  border-radius: 999px;
-  border: 1px solid rgba(25, 49, 61, 0.1);
-  background: rgba(255, 255, 255, 0.56);
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  background: #ffffff;
   color: var(--text);
   cursor: pointer;
   transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
@@ -918,9 +1050,51 @@ textarea {
   flex-wrap: wrap;
   gap: 0.9rem 1.6rem;
   padding: 1.15rem 1.4rem;
-  border-radius: 24px;
-  background: rgba(255, 255, 255, 0.44);
-  border: 1px solid rgba(25, 49, 61, 0.08);
+  border-radius: var(--radius-lg);
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: var(--shadow-soft);
+}
+
+.local-directory-cta {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem 1.35rem;
+  border-radius: var(--radius-lg);
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.09);
+  border-left: 3px solid rgba(37, 99, 235, 0.22);
+  box-shadow: 0 1px 0 rgba(15, 23, 42, 0.04), 0 12px 30px rgba(15, 23, 42, 0.04);
+}
+
+.local-directory-cta h2 {
+  margin: 0.65rem 0 0.35rem;
+}
+
+.local-directory-cta p {
+  margin: 0;
+}
+
+.local-directory-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.local-filter-panel {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.local-contact-card {
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.09);
+  border-left: 3px solid rgba(37, 99, 235, 0.16);
+  padding: 1.25rem;
+  border-radius: var(--radius-lg);
   box-shadow: var(--shadow-soft);
 }
 
@@ -935,15 +1109,30 @@ textarea {
 .trust-icon {
   width: 0.55rem;
   height: 0.55rem;
-  border-radius: 999px;
+  border-radius: 2px;
   background: linear-gradient(135deg, var(--brand), var(--highlight));
-  box-shadow: 0 0 0 4px rgba(20, 108, 82, 0.08);
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.08);
 }
 
 .section-heading h2 {
   margin: 0.55rem 0 0;
   font-family: var(--font-display);
   font-size: 1.8rem;
+}
+
+.section-heading {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+}
+
+.section-heading .eyebrow {
+  font-size: clamp(1.65rem, 3vw, 2.7rem);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  padding: 0;
+  background: transparent;
+  color: var(--text);
 }
 
 .how-it-works {
@@ -957,23 +1146,27 @@ textarea {
   flex-direction: column;
   gap: 0.8rem;
   padding: 1.5rem;
-  border-radius: 28px;
-  background: rgba(255, 251, 245, 0.76);
-  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: var(--radius-lg);
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.08);
   box-shadow: var(--shadow-soft);
+  border-top: 3px solid rgba(37, 99, 235, 0.2);
 }
 
 .how-step-icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 3rem;
+  width: fit-content;
+  min-width: 4rem;
   height: 3rem;
-  border-radius: 18px;
-  background: rgba(20, 108, 82, 0.1);
+  padding: 0 0.9rem;
+  border-radius: var(--radius-sm);
+  background: var(--brand-soft);
   color: var(--brand-deep);
   font-family: var(--font-display);
   font-weight: 700;
+  font-size: 0.95rem;
 }
 
 .how-step h4 {
@@ -993,9 +1186,9 @@ textarea {
   align-items: center;
   gap: 0.9rem;
   padding: 1rem;
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.62);
-  border: 1px solid rgba(25, 49, 61, 0.08);
+  border-radius: var(--radius);
+  background: #f8fbff;
+  border: 1px solid rgba(15, 23, 42, 0.08);
 }
 
 .provider-avatar {
@@ -1004,7 +1197,7 @@ textarea {
   justify-content: center;
   width: 2.8rem;
   height: 2.8rem;
-  border-radius: 16px;
+  border-radius: var(--radius-sm);
   background: linear-gradient(135deg, var(--brand-deep), var(--brand));
   color: white;
   font-family: var(--font-display);
@@ -1042,8 +1235,8 @@ textarea {
   margin-top: 2rem;
   padding: 2.6rem 2rem 1.6rem;
   border-top: 1px solid rgba(25, 49, 61, 0.08);
-  background: rgba(255, 251, 245, 0.58);
-  backdrop-filter: blur(16px);
+  background: #ffffff;
+  backdrop-filter: none;
 }
 
 .site-footer-grid {
@@ -1126,12 +1319,14 @@ textarea {
   .geo-panel,
   .provider-layout,
   .booking-layout,
+  .profile-layout,
   .auth-layout,
   .details-hero,
   .details-layout,
   .service-grid,
   .compact-grid,
   .filter-panel,
+  .local-directory-cta,
   .how-it-works,
   .site-footer-grid {
     grid-template-columns: 1fr;
@@ -1174,8 +1369,13 @@ textarea {
   .meta-grid,
   .booking-insights,
   .slot-picker,
-  .availability-times {
+  .availability-times,
+  .chat-form {
     grid-template-columns: 1fr;
+  }
+
+  .chat-bubble {
+    width: 100%;
   }
 
   .geo-locate-button {
@@ -1188,7 +1388,8 @@ textarea {
   }
 
   .trust-bar,
-  .site-footer-bottom {
+  .site-footer-bottom,
+  .local-directory-meta {
     align-items: flex-start;
     flex-direction: column;
   }

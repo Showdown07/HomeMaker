@@ -81,9 +81,8 @@ export const createBooking = asyncHandler(async (req, res) => {
     notes: req.body.notes,
     payment: {
       amount: service.price,
-      status: "paid",
+      status: "created",
       method: "mock_razorpay",
-      transactionId: mockTransactionId(),
     },
   });
 
@@ -143,6 +142,83 @@ export const updateBookingStatus = asyncHandler(async (req, res) => {
     title: "Booking status updated",
     message: `${booking.service.name} is now ${booking.status}`,
     type: "booking-status",
+    meta: { bookingId: booking._id },
+  });
+
+  res.json({ success: true, data: booking });
+});
+
+export const processMockPayment = asyncHandler(async (req, res) => {
+  const booking = await Booking.findById(req.params.id).populate("service", "name");
+  if (!booking) {
+    res.status(StatusCodes.NOT_FOUND);
+    throw new Error("Booking not found");
+  }
+
+  const ownsBooking =
+    booking.user.toString() === req.user._id.toString() || req.user.role === "admin";
+  if (!ownsBooking) {
+    res.status(StatusCodes.FORBIDDEN);
+    throw new Error("Forbidden");
+  }
+
+  if (booking.status === "cancelled") {
+    res.status(StatusCodes.BAD_REQUEST);
+    throw new Error("Cancelled bookings cannot be paid");
+  }
+
+  booking.payment.status = "paid";
+  booking.payment.method = "mock_razorpay";
+  booking.payment.transactionId = mockTransactionId();
+  await booking.save();
+
+  await createNotification({
+    recipient: booking.provider,
+    title: "Payment received",
+    message: `Payment confirmed for ${booking.service?.name || "a booking"}`,
+    type: "payment",
+    meta: { bookingId: booking._id },
+  });
+
+  res.json({ success: true, data: booking });
+});
+
+export const cancelBooking = asyncHandler(async (req, res) => {
+  const booking = await Booking.findById(req.params.id).populate("service", "name");
+  if (!booking) {
+    res.status(StatusCodes.NOT_FOUND);
+    throw new Error("Booking not found");
+  }
+
+  const canCancel =
+    req.user.role === "admin" ||
+    booking.user.toString() === req.user._id.toString() ||
+    booking.provider.toString() === req.user._id.toString();
+
+  if (!canCancel) {
+    res.status(StatusCodes.FORBIDDEN);
+    throw new Error("Forbidden");
+  }
+
+  if (booking.status === "completed") {
+    res.status(StatusCodes.BAD_REQUEST);
+    throw new Error("Completed bookings cannot be cancelled");
+  }
+
+  booking.status = "cancelled";
+  if (booking.payment.status === "paid") {
+    booking.payment.status = "refunded";
+  }
+  await booking.save();
+
+  const recipient =
+    booking.user.toString() === req.user._id.toString() ? booking.provider : booking.user;
+
+  await createNotification({
+    recipient,
+    title: "Booking cancelled",
+    message: `${booking.service?.name || "Booking"} was cancelled`,
+    type: "booking-cancelled",
     meta: { bookingId: booking._id },
   });
 

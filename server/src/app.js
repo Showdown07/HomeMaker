@@ -16,6 +16,7 @@ import providerRoutes from "./routes/providerRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import localContactRoutes from "./routes/localContactRoutes.js";
 import helpRequestRoutes from "./routes/helpRequestRoutes.js";
+import messageRoutes from "./routes/messageRoutes.js";
 
 dotenv.config();
 
@@ -67,6 +68,7 @@ app.use("/api/notifications", notificationRoutes);
 app.use("/api/providers", providerRoutes);
 app.use("/api/local-contacts", localContactRoutes);
 app.use("/api/help-requests", helpRequestRoutes);
+app.use("/api/messages", messageRoutes);
 app.use("/api/admin", adminRoutes);
 
 app.use(notFound);

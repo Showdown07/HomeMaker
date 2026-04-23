@@ -23,6 +23,7 @@ const Layout = ({ children }) => {
             {auth.user?.role === "user" && <NavLink to="/dashboard">My Bookings</NavLink>}
             {auth.user?.role === "provider" && <NavLink to="/provider">Provider Hub</NavLink>}
             {auth.user?.role === "admin" && <NavLink to="/admin">Admin Console</NavLink>}
+            {auth.user && <NavLink to="/profile">Profile</NavLink>}
           </nav>
           {auth.user ? (
             <div className="topbar-actions">

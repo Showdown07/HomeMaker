@@ -9,6 +9,9 @@ import RegisterPage from "./pages/RegisterPage.jsx";
 import UserDashboardPage from "./pages/UserDashboardPage.jsx";
 import ProviderDashboardPage from "./pages/ProviderDashboardPage.jsx";
 import AdminDashboardPage from "./pages/AdminDashboardPage.jsx";
+import ProviderProfilePage from "./pages/ProviderProfilePage.jsx";
+import ProfilePage from "./pages/ProfilePage.jsx";
+import LocalContactsPage from "./pages/LocalContactsPage.jsx";
 import { useAuth } from "./context/AuthContext.jsx";
 
 const App = () => {
@@ -19,6 +22,15 @@ const App = () => {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/services/:id" element={<ServiceDetailsPage />} />
+        <Route path="/providers/:id" element={<ProviderProfilePage />} />
+        <Route
+          path="/local-contacts"
+          element={
+            <ProtectedRoute roles={["user", "admin"]}>
+              <LocalContactsPage />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/book/:id"
           element={
@@ -40,6 +52,14 @@ const App = () => {
           element={
             <ProtectedRoute roles={["user", "admin"]}>
               <UserDashboardPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute roles={["user", "provider", "admin"]}>
+              <ProfilePage />
             </ProtectedRoute>
           }
         />

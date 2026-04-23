@@ -4,6 +4,7 @@ import app from "../app.js";
 import Review from "../models/Review.js";
 import Notification from "../models/Notification.js";
 import LocalContact from "../models/LocalContact.js";
+import Message from "../models/Message.js";
 import { createAuthFixtures } from "./helpers.js";
 import { clearTestDatabase, setupTestDatabase, teardownTestDatabase } from "./setup.js";
 
@@ -63,7 +64,14 @@ addTest("creates a booking, updates status, and stores notifications", async () 
     });
 
   assert.equal(bookingResponse.status, 201);
-  assert.equal(bookingResponse.body.data.payment.status, "paid");
+  assert.equal(bookingResponse.body.data.payment.status, "created");
+
+  const paymentResponse = await request(app)
+    .put(`/api/bookings/${bookingResponse.body.data._id}/pay`)
+    .set("Authorization", `Bearer ${userLogin.body.data.token}`);
+
+  assert.equal(paymentResponse.status, 200);
+  assert.equal(paymentResponse.body.data.payment.status, "paid");
 
   const statusResponse = await request(app)
     .put(`/api/bookings/${bookingResponse.body.data._id}/status`)
@@ -76,8 +84,56 @@ addTest("creates a booking, updates status, and stores notifications", async () 
   const providerNotifications = await Notification.find({ recipient: provider._id });
   const userNotifications = await Notification.find({ recipient: user._id });
 
-  assert.equal(providerNotifications.length, 1);
+  assert.equal(providerNotifications.length, 2);
   assert.equal(userNotifications.length, 1);
+});
+
+addTest("booking participants can cancel and message each other", async () => {
+  const { provider, user, service } = await createAuthFixtures();
+
+  const userLogin = await request(app).post("/api/auth/login").send({
+    email: user.email,
+    password: "password123",
+  });
+
+  const bookingResponse = await request(app)
+    .post("/api/bookings")
+    .set("Authorization", `Bearer ${userLogin.body.data.token}`)
+    .send({
+      serviceId: service._id.toString(),
+      bookingDate: "2026-04-13",
+      slotStart: "10:00",
+      slotEnd: "11:00",
+      address: "Demo Address",
+      city: "Bengaluru",
+    });
+
+  const messageResponse = await request(app)
+    .post("/api/messages")
+    .set("Authorization", `Bearer ${userLogin.body.data.token}`)
+    .send({
+      bookingId: bookingResponse.body.data._id,
+      body: "Please call before arriving",
+    });
+
+  assert.equal(messageResponse.status, 201);
+
+  const messagesResponse = await request(app)
+    .get(`/api/messages/booking/${bookingResponse.body.data._id}`)
+    .set("Authorization", `Bearer ${userLogin.body.data.token}`);
+
+  assert.equal(messagesResponse.status, 200);
+  assert.equal(messagesResponse.body.data.length, 1);
+
+  const cancelResponse = await request(app)
+    .put(`/api/bookings/${bookingResponse.body.data._id}/cancel`)
+    .set("Authorization", `Bearer ${userLogin.body.data.token}`);
+
+  assert.equal(cancelResponse.status, 200);
+  assert.equal(cancelResponse.body.data.status, "cancelled");
+
+  const messages = await Message.find({ recipient: provider._id });
+  assert.equal(messages.length, 1);
 });
 
 addTest("allows a completed booking to be reviewed exactly once", async () => {
@@ -160,11 +216,15 @@ addTest("rejects invalid booking slot format", async () => {
   assert.match(response.body.message, /HH:MM/i);
 });
 
-addTest("admin can add a local contact and users can see it in the public directory", async () => {
-  const { admin } = await createAuthFixtures();
+addTest("admin can add a local contact and users can see it in the protected directory", async () => {
+  const { admin, user } = await createAuthFixtures();
 
   const adminLogin = await request(app).post("/api/auth/login").send({
     email: admin.email,
+    password: "password123",
+  });
+  const userLogin = await request(app).post("/api/auth/login").send({
+    email: user.email,
     password: "password123",
   });
 
@@ -183,11 +243,14 @@ addTest("admin can add a local contact and users can see it in the public direct
 
   assert.equal(createResponse.status, 201);
 
-  const publicResponse = await request(app).get("/api/local-contacts").query({
-    city: "Bengaluru",
-    pincode: "560001",
-    category: "electrician",
-  });
+  const publicResponse = await request(app)
+    .get("/api/local-contacts")
+    .set("Authorization", `Bearer ${userLogin.body.data.token}`)
+    .query({
+      city: "Bengaluru",
+      pincode: "560001",
+      category: "electrician",
+    });
 
   assert.equal(publicResponse.status, 200);
   assert.equal(publicResponse.body.data.length, 1);
